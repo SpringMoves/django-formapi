@@ -118,6 +118,7 @@ class API(FormView):
         filtered_pairs = itertools.ifilter(lambda x: x[1] is not None, pairs)
         query_string = '&'.join(('='.join(pair) for pair in filtered_pairs))
         query_string = urllib2.quote(query_string.encode('utf-8'))
+
         digest = hmac.new(
             str(self.api_key.secret),
             query_string,
@@ -135,7 +136,11 @@ class API(FormView):
             if len(value) == 1:
                 yield field, value[0]
             else:
-                for item in sorted(value):
+                if all(isinstance(v, basestring) and v.isdigit() for v in value):
+                    value = sorted(value, key=float)
+                else:
+                    value = sorted(value)
+                for item in value:
                     yield field, item
 
     def render_to_json_response(self, context, **response_kwargs):
