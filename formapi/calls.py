@@ -7,9 +7,9 @@ class APICall(forms.Form):
         super(APICall, self).__init__(*args, **kwargs)
         self.api_key = api_key
 
-    def add_error(self, error_msg):
+    def add_error(self, field, error):
         errors = self.non_field_errors()
-        errors.append(error_msg)
+        errors.append(error)
         self._errors[forms.NON_FIELD_ERRORS] = errors
 
     def clean(self):
